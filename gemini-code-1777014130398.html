@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Over The Shoulder (OTS)</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #daffde;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .simulator-container {
+            background-color: #000;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 800px;
+        }
+
+        /* Área de la cámara (Visor) */
+        .camera-view {
+            position: relative;
+            width: 100%;
+            height: 450px;
+            background-color: #87CEEB; /* Cielo base */
+            border: 4px solid #111;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        /* 1. Fondo: La Calle (Sujeto B) */
+        .background-layer {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            transition: filter 0.1s ease;
+            display: flex;
+            align-items: flex-end;
+        }
+        
+        /* Dibujo CSS de la calle */
+        .street { width: 100%; height: 50%; background: #555; position: relative; }
+        .street-line { width: 100%; height: 4px; border-bottom: 8px dashed #ffd700; position: absolute; top: 50%; }
+        .building { position: absolute; bottom: 50%; width: 150px; height: 200px; background: #8B4513; left: 60%; border: 2px solid #333;}
+        .window { width: 30px; height: 40px; background: #ADD8E6; margin: 15px; display: inline-block; }
+        .pothole { position: absolute; bottom: 20%; left: 65%; width: 80px; height: 30px; background: #222; border-radius: 50%; }
+        .car { position: absolute; bottom: 25%; left: 40%; width: 120px; height: 60px; background: #d9534f; border-radius: 10px 10px 0 0; }
+
+        /* 2. Primer Plano: El Hombro (Sujeto A) */
+        .foreground-layer {
+            position: absolute;
+            bottom: -20px;
+            left: -30px;
+            width: 45%;
+            height: 80%;
+            transition: filter 0.1s ease;
+            z-index: 10;
+        }
+
+        /* Silueta SVG del Hombro y Cabeza */
+        .shoulder-svg { width: 100%; height: 100%; fill: #222; filter: drop-shadow(5px 5px 15px rgba(0,0,0,0.8)); }
+
+        /* 3. Regla de Tercios (Cuadrícula) */
+        .grid-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            pointer-events: none; /* Para no interferir */
+            z-index: 20;
+            opacity: 0; /* Oculto por defecto */
+            transition: opacity 0.3s ease;
+        }
+        .grid-overlay.active { opacity: 1; }
+        .grid-cell { border: 1px dashed rgba(222, 255, 154, 0.6); }
+
+        /* Controles Inferiores */
+        .controls { display: flex; justify-content: space-between; align-items: center; background: #111; padding: 20px; border-radius: 8px; }
+        
+        .slider-group { flex-grow: 1; margin-right: 30px; }
+        .slider-group label { display: block; margin-bottom: 10px; font-weight: bold; color: #deff9a; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        input[type=range] { width: 100%; cursor: pointer; accent-color: #deff9a; }
+        
+        .labels { display: flex; justify-content: space-between; font-size: 12px; margin-top: 5px; color: #888; }
+
+        .btn {
+            background-color: #deff9a;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .btn:hover { background-color: #bceb6d; }
+    </style>
+</head>
+<body>
+
+    <div class="simulator-container">
+        
+        <div style="margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #f5f5f5;">Simulador OTS <span style="color: #deff9a;">(Over The Shoulder)</span></h2>
+            <p style="margin: 5px 0 0 0; font-size: 14px; color: #888;">Demostración de Enfoque y Composición Periodística</p>
+        </div>
+
+        <div class="camera-view">
+            
+            <div class="background-layer" id="bgLayer">
+                <div class="building">
+                    <div class="window"></div><div class="window"></div>
+                    <div class="window"></div><div class="window"></div>
+                </div>
+                <div class="street">
+                    <div class="street-line"></div>
+                    <div class="pothole"></div>
+                    <div class="car"></div>
+                </div>
+            </div>
+
+            <div class="foreground-layer" id="fgLayer">
+                <svg viewBox="0 0 100 100" class="shoulder-svg" preserveAspectRatio="none">
+                    <path d="M 0,100 L 0,30 C 10,20 30,10 50,15 C 60,18 70,30 75,50 C 80,70 95,85 100,100 Z" />
+                    <circle cx="20" cy="25" r="20" />
+                </svg>
+            </div>
+
+            <div class="grid-overlay" id="gridOverlay">
+                <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+                <div class="grid-cell"></div><div class="grid-cell"></div><div class="grid-cell"></div>
+            </div>
+            
+            <div style="position: absolute; top: 15px; right: 20px; color: red; font-weight: bold; font-family: monospace; z-index: 30; font-size: 18px;">
+                ● REC
+            </div>
+
+        </div>
+
+        <div class="controls">
+            <div class="slider-group">
+                <label for="focusSlider">Anillo de Enfoque (Foco)</label>
+                <input type="range" id="focusSlider" min="0" max="100" value="50">
+                <div class="labels">
+                    <span>Foco en Entrevistado</span>
+                    <span>Foco en la Noticia (OTS Ideal)</span>
+                </div>
+            </div>
+            <button class="btn" id="gridBtn">Regla de Tercios</button>
+        </div>
+
+    </div>
+
+    <script>
+        const focusSlider = document.getElementById('focusSlider');
+        const bgLayer = document.getElementById('bgLayer');
+        const fgLayer = document.getElementById('fgLayer');
+        const gridBtn = document.getElementById('gridBtn');
+        const gridOverlay = document.getElementById('gridOverlay');
+
+        // Función para actualizar el desenfoque basado en el slider
+        function updateFocus() {
+            const val = parseInt(focusSlider.value); // Valor de 0 a 100
+            const maxBlur = 12; // Cantidad máxima de desenfoque en píxeles
+
+            // Si val = 0 (foco cerca): fondo muy borroso, frente nítido
+            // Si val = 100 (foco lejos): fondo nítido, frente muy borroso
+            const bgBlur = maxBlur * (1 - (val / 100));
+            const fgBlur = maxBlur * (val / 100);
+
+            bgLayer.style.filter = `blur(${bgBlur}px)`;
+            fgLayer.style.filter = `blur(${fgBlur}px)`;
+        }
+
+        // Ejecutar una vez al cargar para establecer el estado inicial
+        updateFocus();
+
+        // Escuchar cambios en el slider
+        focusSlider.addEventListener('input', updateFocus);
+
+        // Botón de Regla de Tercios
+        gridBtn.addEventListener('click', () => {
+            gridOverlay.classList.toggle('active');
+            if(gridOverlay.classList.contains('active')) {
+                gridBtn.style.backgroundColor = '#bceb6d';
+                gridBtn.innerText = "Ocultar Cuadrícula";
+            } else {
+                gridBtn.style.backgroundColor = '#deff9a';
+                gridBtn.innerText = "Regla de Tercios";
+            }
+        });
+    </script>
+</body>
+</html>
