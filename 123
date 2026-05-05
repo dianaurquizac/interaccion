@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diseño de Planta - Magazine TV</title>
+</head>
+<body style="margin: 0; display: flex; justify-content: center; align-items: center; background-color: #1e293b; height: 100vh;">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500" style="background-color: #0f172a; box-shadow: 0 4px 6px rgba(0,0,0,0.5);">
+  <!-- Título -->
+  <text x="400" y="40" fill="#ffffff" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle">DISEÑO DE PLANTA: MICROPROGRAMA DE TV</text>
+
+  <!-- Pared y Backings -->
+  <line x1="50" y1="80" x2="750" y2="80" stroke="#334155" stroke-width="4"/>
+  
+  <rect x="70" y="70" width="200" height="20" fill="#64748b" rx="2"/>
+  <text x="170" y="60" fill="#cbd5e1" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">BACKING 1</text>
+
+  <rect x="300" y="70" width="200" height="20" fill="#64748b" rx="2"/>
+  <text x="400" y="60" fill="#cbd5e1" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">BACKING 2</text>
+
+  <rect x="530" y="70" width="200" height="20" fill="#64748b" rx="2"/>
+  <text x="630" y="60" fill="#cbd5e1" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">BACKING 3</text>
+
+  <!-- ZONA 2 (Izquierda) - Exposición -->
+  <rect x="120" y="220" width="100" height="50" fill="#3b82f6" rx="4"/>
+  <text x="170" y="250" fill="#ffffff" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">MESA</text>
+  
+  <text x="170" y="300" fill="#3b82f6" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">ZONA 2</text>
+  <text x="170" y="320" fill="#94a3b8" font-family="Arial" font-size="12" text-anchor="middle">(Planos cercanos)</text>
+
+  <!-- ZONA 1 (Derecha) - Diálogo -->
+  <circle cx="630" cy="260" r="22" fill="#10b981"/>
+  <text x="630" y="265" fill="#ffffff" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle">COND.</text>
+
+  <circle cx="560" cy="190" r="22" fill="#f59e0b"/>
+  <text x="560" y="195" fill="#ffffff" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle">INV. 1</text>
+
+  <circle cx="700" cy="190" r="22" fill="#f59e0b"/>
+  <text x="700" y="195" fill="#ffffff" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle">INV. 2</text>
+
+  <text x="630" y="330" fill="#10b981" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">ZONA 1</text>
+  <text x="630" y="350" fill="#94a3b8" font-family="Arial" font-size="12" text-anchor="middle">(Diálogo principal)</text>
+
+  <!-- Desplazamiento y Distancia -->
+  <line x1="520" y1="245" x2="240" y2="245" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="8,8" marker-end="url(#arrow)"/>
+  <text x="380" y="235" fill="#cbd5e1" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle"><- 3 METROS -></text>
+  <text x="380" y="270" fill="#94a3b8" font-family="Arial" font-size="12" text-anchor="middle">Caminata en vivo</text>
+
+  <!-- Eje de Acción -->
+  <line x1="50" y1="380" x2="750" y2="380" stroke="#ef4444" stroke-width="2" stroke-dasharray="10,5"/>
+  <text x="400" y="372" fill="#ef4444" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle">EJE DE ACCIÓN (LÍNEA DE 180°)</text>
+
+  <!-- Cámaras -->
+  <!-- Cámara 2 -->
+  <rect x="250" y="410" width="40" height="30" fill="#e2e8f0" rx="3"/>
+  <polygon points="270,410 285,380 255,380" fill="#e2e8f0"/>
+  <text x="270" y="460" fill="#ffffff" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">CÁMARA 2</text>
+  <text x="270" y="480" fill="#94a3b8" font-family="Arial" font-size="11" text-anchor="middle">(Cruza a Zona 2)</text>
+
+  <!-- Cámara 1 -->
+  <rect x="510" y="410" width="40" height="30" fill="#e2e8f0" rx="3"/>
+  <polygon points="530,410 545,380 515,380" fill="#e2e8f0"/>
+  <text x="530" y="460" fill="#ffffff" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">CÁMARA 1</text>
+  <text x="530" y="480" fill="#94a3b8" font-family="Arial" font-size="11" text-anchor="middle">(Apunta a Zona 1)</text>
+
+  <!-- Definición de flecha -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#cbd5e1"/>
+    </marker>
+  </defs>
+</svg>
+
+</body>
+</html>
